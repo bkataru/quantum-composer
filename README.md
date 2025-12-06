@@ -2,8 +2,6 @@
 
 A professional, drag-and-drop Quantum Circuit Composer built with Python. Design quantum circuits, visualize the code in real-time, and run simulations on a local quantum simulator.
 
-![Composer Screenshot](https://via.placeholder.com/800x450?text=Insert+Your+Screenshot+Here)
-
 ## 🚀 How to Install and Run (No Coding Knowledge Required)
 
 Follow these 3 simple steps to get started.
