@@ -1,96 +1,90 @@
 # Open Quantum Composer Pro
 
-A professional, drag-and-drop Quantum Circuit Composer built with Python. Design quantum circuits, visualize the code in real-time, and run simulations on a local quantum simulator.
+A professional, drag-and-drop Quantum Circuit Composer built with Python. Design quantum circuits, visualize the Qiskit code in real-time, simulate results locally, and verify states on the Bloch Sphere.
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/viveksoorya/quantum-composer)](https://github.com/viveksoorya/quantum-composer/releases/latest)
+---
 
-## 🚀 How to Install and Run (No Coding Knowledge Required)
+## 📥 Download & Run (No Install Required)
 
-Follow these 3 simple steps to get started.
+We provide standalone apps for Windows, Mac, and Linux. You do **not** need to install Python to use these.
 
-### 1. Install Python
-You need Python installed on your computer to run this program.
-* **Download Python here:** [python.org/downloads](https://www.python.org/downloads/)
-* **IMPORTANT:** When installing, make sure to check the box that says **"Add Python to PATH"**.
+**[Click here to view the Latest Release](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/releases/latest)**
 
-### 2. Download this Program
-1.  Scroll to the top of this page.
-2.  Click the green button that says **<> Code**.
-3.  Click **Download ZIP**.
-4.  Find the downloaded `.zip` file on your computer and **extract (unzip)** it to a folder.
+| OS | File to Download | How to Run |
+| :--- | :--- | :--- |
+| **Windows** | `QuantumComposer.exe` | **Double-click** to run.<br>*(See note below if Windows warns you)* |
+| **Mac** | `QuantumComposer_Mac` | Download, unzip.<br>**Right-Click** the app and select **Open**. |
+| **Linux** | `QuantumComposer_Linux` | Open terminal in the folder.<br>Run: `chmod +x QuantumComposer_Linux`<br>Run: `./QuantumComposer_Linux` |
 
-### 3. Run the App
+### ⚠️ "Unverified Developer" Warning?
+Because this is a free open-source project, we don't buy expensive certificates from Microsoft/Apple.
+* **Windows:** If you see "Windows protected your PC", click **More Info** -> **Run Anyway**.
+* **Mac:** If you see "Cannot be opened...", click **Done**. Then **Right-Click** the app and choose **Open**.
 
-#### 🪟 For Windows Users
-1.  Open the folder where you extracted the files.
-2.  **Double-click** the file named `run_app.bat` (if included) OR open a terminal in this folder.
-3.  Run the following commands to install libraries and start the app:
+---
+
+## 🐍 For Python Developers (Run from Source)
+
+If you prefer to run the code directly or want to contribute:
+
+1.  **Clone the Repo:**
+    ```bash
+    git clone [https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git)
+    cd YOUR_REPO_NAME
+    ```
+
+2.  **Install Dependencies:**
     ```bash
     pip install -r requirements.txt
+    ```
+
+3.  **Run:**
+    ```bash
     python main.py
     ```
 
-#### 🍎 For Mac/Linux Users
-1.  Open your **Terminal**.
-2.  Type `cd ` (with a space) and drag the project folder into the terminal window. Press Enter.
-3.  Type the following command to install libraries:
-    ```bash
-    pip3 install -r requirements.txt
-    ```
-4.  Run the app:
-    ```bash
-    python3 main.py
-    ```
+---
+
+## 🎮 Features & Usage
+
+### 1. Drag-and-Drop Circuit Design
+* **Place Gates:** Drag gates (H, X, Z, etc.) from the left palette onto the circuit wires.
+* **Move Gates:** Click and drag existing gates to move them to new positions.
+* **Delete Gates:** Right-click any gate and select **Delete**.
+
+### 2. Advanced Gates
+* **Multi-Qubit (CNOT, SWAP, CZ):** Drag the gate to the control qubit. A popup will ask for the **Target Qubit** index.
+    * *Visuals:* CNOTs render as a Control Dot (●) connected to a Target Cross (⊕).
+* **Rotation Gates (RX, RY, RZ, P):** Drag the gate to the grid. A popup will ask for the rotation angle (in radians).
+
+### 3. Simulation & Visualization
+The app includes a built-in **Qiskit Aer** simulator.
+* **Results Tab:** Shows a histogram of measurement counts (probabilities).
+* **Run:** Click the `▶` Play button in the toolbar to run the simulation.
+
+### 4. Code & Exporting
+* **Two-Way Sync:** As you drag gates, the **Qiskit Code** tab updates instantly. You can also type code manually, and the grid will update!
+* **Export Image:** `File -> Export -> Export Image` saves a high-res PNG of your circuit.
+* **Export Code:** `File -> Export -> Export Code` saves a `.py` file ready to run on IBM Quantum.
 
 ---
 
-## 🎮 How to Use
+## 🛠️ Architecture
 
-### Basic Controls
-* **Add Gate:** Drag a gate (like **H**, **X**, **CNOT**) from the left palette onto the grid.
-* **Move Gate:** Click and drag a gate already on the grid to move it.
-* **Delete Gate:** Right-click a gate and select **Delete**.
-* **Edit Code:** You can type Qiskit code manually in the editor on the right. The grid will update automatically!
+This project uses a strict **Model-View-Controller (MVC)** architecture.
 
-### Advanced Features
-* **Multi-Qubit Gates (CNOT, SWAP):**
-    1. Drag a **CX** or **SWAP** gate onto a wire.
-    2. A popup will ask for the **Target Qubit** index.
-    3. Enter the number of the qubit you want to connect to (e.g., `1` or `2`).
-* **Rotation Gates (RX, RY, RZ):**
-    1. Drag an **RX** gate onto the grid.
-    2. A popup will ask for the rotation angle (in radians).
-    3. Type a number (e.g., `3.14` or `1.57`).
-
-### Exporting & Saving
-* **Save Project:** Go to `File -> Save Project` to save your work.
-* **Export Image:** Go to `Export -> Export Circuit Image` to save a PNG of your circuit.
-* **Export Code:** Go to `Export -> Export Qiskit Code` to get a Python file ready for IBM Quantum.
-
----
-
-## 🛠️ Architecture (For Developers)
-
-This project follows a strict **Model-View-Controller (MVC)** architecture for modularity and scalability.
-
-* **Models:** Handle the business logic (Circuit state, Qiskit code generation, Parsing).
-* **Views:** Handle the UI (PyQt6 widgets, Drawing logic, Styling).
-* **Controllers:** Bridge the Models and Views (Event handling, Signal routing).
-
-### Directory Structure
 ```text
 quantum_composer/
 ├── main.py                   # Entry point
-├── requirements.txt          # Dependencies
 ├── models/
-│   ├── circuit_model.py      # Circuit State Logic
-│   ├── code_generator.py     # Model -> Code
-│   └── code_parser.py        # Code -> Model
+│   ├── circuit_model.py      # Circuit State & Undo Stack
+│   ├── code_generator.py     # Grid -> Qiskit String
+│   └── code_parser.py        # Qiskit String -> Grid
 ├── views/
-│   ├── main_window.py        # Main UI Shell
+│   ├── main_window.py        # UI Shell & Tab Management
 │   ├── palette_view.py       # Draggable Gates
-│   ├── circuit_view.py       # Custom Drawing Engine (Grid)
-│   ├── code_editor_view.py   # Text Editor
+│   ├── circuit_view.py       # Custom Painting Engine (The Grid)
+│   ├── visualization_view.py # Matplotlib Charts (Histogram & Bloch)
 │   └── styles.py             # CSS Themes
 └── controllers/
-    └── main_controller.py    # Logic Controller
+    └── main_controller.py    # Logic, Event Handling, Simulation
