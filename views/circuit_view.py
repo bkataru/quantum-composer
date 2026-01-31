@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QFrame, QMenu, QApplication
+from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QFrame, QMenu, QApplication, QPushButton, QMessageBox
 from PyQt6.QtCore import Qt, pyqtSignal, QMimeData, QPoint
 from PyQt6.QtGui import QDrag, QAction, QPainter, QPen, QColor, QPixmap, QFont, QFontMetrics
 from .styles import GATE_CSS
@@ -103,29 +103,6 @@ class DropLabel(QLabel):
         # Clear any preview and restore cursor
         self.clear_shadow()
         QApplication.restoreOverrideCursor()
-        
-        # determine leftmost available slot in this qubit row (to keep gates left-aligned)
-        def _find_circuit_view(widget):
-            p = widget.parent()
-            while p is not None and not hasattr(p, 'drop_zones'):
-                p = p.parent()
-            return p
-
-        def _leftmost_available(qubit_idx, exclude_pos=None):
-            cv = _find_circuit_view(self)
-            if not cv:
-                return self.time_idx
-            for t in range(cv.num_steps):
-                zone = cv.drop_zones.get((qubit_idx, t))
-                if zone is None:
-                    continue
-                # allow placing back into the original slot when excluding
-                if exclude_pos and (qubit_idx, t) == exclude_pos:
-                    return t
-                if zone.current_gate is None:
-                    return t
-            # fallback: use the drop zone's index
-            return self.time_idx
 
         if data.startswith("MOVE:"):
             _, gate_name, old_q, old_t = data.split(":")
@@ -134,12 +111,10 @@ class DropLabel(QLabel):
             if old_q == self.qubit_idx and old_t == self.time_idx:
                 event.ignore(); return
 
-            new_t = _leftmost_available(self.qubit_idx, exclude_pos=(old_q, old_t))
-            # Emit reposition using the leftmost available column
-            self.gate_repositioned.emit(old_q, old_t, self.qubit_idx, new_t)
+            # Emit reposition without aligning left
+            self.gate_repositioned.emit(old_q, old_t, self.qubit_idx, self.time_idx)
         else:
-            new_t = _leftmost_available(self.qubit_idx)
-            self.gate_placed.emit(data, self.qubit_idx, new_t)
+            self.gate_placed.emit(data, self.qubit_idx, self.time_idx)
         event.acceptProposedAction()
 
     def dragLeaveEvent(self, event):
@@ -264,6 +239,11 @@ class CircuitView(QWidget):
         self.drop_zones = {}
         self.setup_grid()
 
+        # Add a button to display the circuit array
+        self.display_button = QPushButton("Show Circuit Array", self)
+        self.display_button.clicked.connect(self.show_circuit_array)
+        self.grid.addWidget(self.display_button, num_qubits, 0, 1, num_steps + 1)
+
     def setup_grid(self):
         for q in range(self.num_qubits):
             lbl = QLabel(f"q[{q}]")
@@ -320,3 +300,15 @@ class CircuitView(QWidget):
     def place_connector_visual(self, q, t):
         if (q, t) in self.drop_zones:
             self.drop_zones[(q, t)].set_visual_connector()
+
+    def show_circuit_array(self):
+        circuit_array = []
+        for (q, t), zone in self.drop_zones.items():
+            if zone.current_gate:
+                circuit_array.append({
+                    'gate': zone.current_gate,
+                    'qubit': q,
+                    'position': t
+                })
+        # Display the circuit array in a QMessageBox
+        QMessageBox.information(self, "Circuit Array", str(circuit_array))
