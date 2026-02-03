@@ -244,6 +244,11 @@ class CircuitView(QWidget):
         self.display_button.clicked.connect(self.show_circuit_array)
         self.grid.addWidget(self.display_button, num_qubits, 0, 1, num_steps + 1)
 
+        # Add a button to display the visual state of the circuit (drop_zones)
+        self.display_visual_button = QPushButton("Show Visual State", self)
+        self.display_visual_button.clicked.connect(self.show_visual_state)
+        self.grid.addWidget(self.display_visual_button, num_qubits + 1, 0, 1, num_steps + 1)
+
     def setup_grid(self):
         for q in range(self.num_qubits):
             lbl = QLabel(f"q[{q}]")
@@ -312,3 +317,14 @@ class CircuitView(QWidget):
                 })
         # Display the circuit array in a QMessageBox
         QMessageBox.information(self, "Circuit Array", str(circuit_array))
+
+    def show_visual_state(self):
+        visual_state = []
+        for (q, t), zone in self.drop_zones.items():
+            if zone.current_gate:
+                visual_state.append({
+                    'gate': zone.current_gate,
+                    'qubit': q,
+                    'position': t
+                })
+        QMessageBox.information(self, "Visual State", str(visual_state))

@@ -1,5 +1,5 @@
 from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import QInputDialog
+from PyQt6.QtWidgets import QInputDialog, QPushButton, QMessageBox
 from models.circuit_model import CircuitModel
 from models.code_generator import QiskitCodeGenerator
 from models.code_parser import QiskitCodeParser
@@ -11,6 +11,11 @@ class MainController:
         self.code_gen = QiskitCodeGenerator()
         self.parser = QiskitCodeParser()
         self.is_internal_update = False
+
+        # Add a button to display the logical state of the circuit
+        self.view.circuit_view.display_model_button = QPushButton("Show Logical State", self.view.circuit_view)
+        self.view.circuit_view.display_model_button.clicked.connect(self.show_logical_state)
+        self.view.circuit_view.grid.addWidget(self.view.circuit_view.display_model_button, self.model.num_qubits + 1, 0, 1, self.view.circuit_view.num_steps + 1)
 
         # --- View Signals ---
         self.view.circuit_view.gate_dropped.connect(self.on_gate_dropped)
@@ -98,7 +103,6 @@ class MainController:
             
             # --- NEW CHECK: IS PATH CLEAR? ---
             if not self.is_path_clear(qubit_index, target_index, time_index):
-                from PyQt6.QtWidgets import QMessageBox
                 QMessageBox.warning(self.view, "Invalid Placement", 
                                     "Cannot place gate here: Intermediate wires are blocked by other gates.")
                 # Re-draw from model to ensure view matches model (don't manipulate view state directly)
@@ -205,3 +209,7 @@ class MainController:
                 self.model.load_from_json(f.read())
             self.redraw_circuit_from_model()
             self.update_full_ui()
+
+    def show_logical_state(self):
+        logical_state = self.model.get_operations()
+        QMessageBox.information(self.view.circuit_view, "Logical State", str(logical_state))
