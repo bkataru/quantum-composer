@@ -240,6 +240,9 @@ class MainController:
         # Update inline qubit state visualizations
         self._update_qubit_visualizations(statevector)
         
+        # Feed statevector to visualization tabs (lazy workers)
+        self.view.viz_tabs.set_statevector(statevector, self.model.num_qubits)
+        
         self.view.right_tabs.setCurrentIndex(1)
     
     def _update_qubit_visualizations(self, statevector):

@@ -6,6 +6,7 @@ from .palette_view import PaletteView
 from .circuit_view import CircuitView
 from .code_editor_view import CodeEditorView
 from .visualization_view import VisualizationView
+from .viz_tabs_widget import VizTabsWidget
 from .styles import LIGHT_THEME
 
 class MainWindow(QMainWindow):
@@ -49,9 +50,11 @@ class MainWindow(QMainWindow):
         self.right_tabs = QTabWidget()
         self.code_view = CodeEditorView()
         self.viz_view = VisualizationView()
+        self.viz_tabs = VizTabsWidget()
         
         self.right_tabs.addTab(self.code_view, "Qiskit Code")
         self.right_tabs.addTab(self.viz_view, "Results")
+        self.right_tabs.addTab(self.viz_tabs, "Visualizations")
 
         splitter.addWidget(self.palette_view)
         splitter.addWidget(self.circuit_view)
